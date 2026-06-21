@@ -1,0 +1,9 @@
+/* Estilos adicionais do App.jsx (a maioria foi movida para o index.css) */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}

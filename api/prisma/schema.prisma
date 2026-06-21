@@ -1,0 +1,54 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Diet {
+  id             String     @id @default(uuid())
+  name           String
+  description    String?
+  targetCalories Float      @default(2000)
+  targetProtein  Float      @default(150)
+  targetCarbs    Float      @default(200)
+  targetFat      Float      @default(70)
+  isActive       Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  meals          Meal[]
+}
+
+model Meal {
+  id        String     @id @default(uuid())
+  name      String     // Ex: "Café da Manhã", "Almoço"
+  order     Int        // Ordem de exibição
+  dietId    String
+  diet      Diet       @relation(fields: [dietId], references: [id], onDelete: Cascade)
+  foods     MealFood[]
+}
+
+model MealFood {
+  id        String   @id @default(uuid())
+  mealId    String
+  meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  foodId    String?  // Nulo se for um alimento customizado na hora
+  name      String   // Nome do alimento
+  calories  Float    // Calorias totais para a porção
+  protein   Float    // Proteínas (g) totais para a porção
+  carbs     Float    // Carboidratos (g) totais para a porção
+  fat       Float    // Gorduras (g) totais para a porção
+  amount    Float    // Quantidade em gramas ou unidades (ex: 150g)
+}
+
+model Food {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  calories  Float    // por 100g
+  protein   Float    // por 100g
+  carbs     Float    // por 100g
+  fat       Float    // por 100g
+  isCustom  Boolean  @default(false) // se foi criado pelo usuário
+  createdAt DateTime @default(now())
+}
