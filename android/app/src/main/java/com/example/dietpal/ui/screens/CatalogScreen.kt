@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import java.io.InputStreamReader
 fun CatalogScreen(
     showToastMessage: (String) -> Unit,
     onDietActivated: () -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -224,12 +226,29 @@ fun CatalogScreen(
         // Header
         item {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "Catálogo de Dietas",
-                    color = TextMain,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Catálogo de Dietas",
+                        color = TextMain,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(
+                        onClick = onSettingsClick,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Ajustes",
+                            tint = TextMain,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
                 Text(
                     text = "Crie, ative, e compartilhe suas estruturas de dieta.",
                     color = TextMuted,

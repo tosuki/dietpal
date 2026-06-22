@@ -18,6 +18,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import com.example.dietpal.data.repository.DietPalRepositoryProvider
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DashboardScreen(
     showToastMessage: (String) -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -224,6 +227,18 @@ fun DashboardScreen(
                             color = TextMuted,
                             fontSize = 12.sp,
                             modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = onSettingsClick,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Ajustes",
+                            tint = TextMain,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }

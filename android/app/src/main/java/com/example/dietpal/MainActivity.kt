@@ -117,12 +117,13 @@ fun DietPalApp() {
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             // Conteúdo principal baseado na aba ativa
-            Box(modifier = Modifier.padding(innerPadding)) {
+             Box(modifier = Modifier.padding(innerPadding)) {
                 key(globalRefreshTrigger) {
                     when (currentDestination) {
                         AppDestinations.DASHBOARD -> {
                             DashboardScreen(
-                                showToastMessage = { showToast(it) }
+                                showToastMessage = { showToast(it) },
+                                onSettingsClick = { isSettingsOpen = true }
                             )
                         }
                         AppDestinations.CATALOG -> {
@@ -130,31 +131,18 @@ fun DietPalApp() {
                                 showToastMessage = { showToast(it) },
                                 onDietActivated = {
                                     globalRefreshTrigger++
-                                }
+                                },
+                                onSettingsClick = { isSettingsOpen = true }
                             )
                         }
                         AppDestinations.FOODS -> {
                             CustomFoodsScreen(
-                                showToastMessage = { showToast(it) }
+                                showToastMessage = { showToast(it) },
+                                onSettingsClick = { isSettingsOpen = true }
                             )
                         }
                     }
                 }
-            }
-            
-            // Botão de Engrenagem (Ajustes de Conexão) no topo direito
-            IconButton(
-                onClick = { isSettingsOpen = true },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .statusBarsPadding()
-                    .padding(top = 16.dp, end = 16.dp)
-            ) {
-                Icon(
-                    Icons.Default.Settings,
-                    contentDescription = "Ajustes",
-                    tint = TextMain
-                )
             }
         }
     }
