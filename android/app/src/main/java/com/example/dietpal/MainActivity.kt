@@ -87,7 +87,7 @@ fun DietPalApp() {
                     tonalElevation = 0.dp,
                     windowInsets = WindowInsets(0, 0, 0, 0),
                     modifier = Modifier
-                        .height(64.dp)
+                        .height(80.dp)
                         .graphicsLayer {
                             shape = RoundedCornerShape(32.dp)
                             clip = true
@@ -107,7 +107,7 @@ fun DietPalApp() {
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = TextMain,
                                 unselectedIconColor = TextMuted,
-                                indicatorColor = PrimaryGlow
+                                indicatorColor = Color.Transparent
                             )
                         )
                     }
