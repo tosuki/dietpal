@@ -18,8 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
-import com.example.dietpal.data.api.DietPalApiService
+import com.example.dietpal.data.repository.DietPalRepositoryProvider
 import com.example.dietpal.data.model.Food
 import com.example.dietpal.ui.theme.*
 import kotlinx.coroutines.delay
@@ -32,6 +33,8 @@ fun AddFoodDialog(
     onAddFood: (Food, Double) -> Unit,
     showToastMessage: (String) -> Unit
 ) {
+    val context = LocalContext.current
+    val repository = remember(context) { DietPalRepositoryProvider.getRepository(context) }
     val coroutineScope = rememberCoroutineScope()
     
     // Estados principais
@@ -54,7 +57,7 @@ fun AddFoodDialog(
         if (trimmed.isNotEmpty() && selectedFood == null) {
             delay(300) // Debounce simples
             try {
-                searchResults = DietPalApiService.getFoods(trimmed)
+                searchResults = repository.getFoods(trimmed)
             } catch (e: Exception) {
                 searchResults = emptyList()
             }
@@ -330,7 +333,7 @@ fun AddFoodDialog(
                                 }
                                 coroutineScope.launch {
                                     try {
-                                        val food = DietPalApiService.createCustomFood(
+                                        val food = repository.createCustomFood(
                                             name = customName,
                                             calories = customCalories.toDoubleOrNull() ?: 0.0,
                                             protein = customProtein.toDoubleOrNull() ?: 0.0,

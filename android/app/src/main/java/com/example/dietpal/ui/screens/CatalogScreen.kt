@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dietpal.data.api.DietPalApiService
+import com.example.dietpal.data.repository.DietPalRepositoryProvider
 import com.example.dietpal.data.model.Diet
 import com.example.dietpal.data.model.Meal
 import com.example.dietpal.data.model.MealFood
@@ -45,6 +45,7 @@ fun CatalogScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val repository = remember(context) { DietPalRepositoryProvider.getRepository(context) }
     val coroutineScope = rememberCoroutineScope()
     val gson = Gson()
 
@@ -61,7 +62,7 @@ fun CatalogScreen(
             isLoading = true
             isError = false
             try {
-                diets = DietPalApiService.getDiets()
+                diets = repository.getDiets()
             } catch (e: Exception) {
                 isError = true
             } finally {
@@ -119,7 +120,7 @@ fun CatalogScreen(
                             meals = cleanMeals
                         )
 
-                        DietPalApiService.createDiet(toCreate)
+                        repository.createDiet(toCreate)
                         showToastMessage("Dieta importada com sucesso!")
                         loadDiets()
                         onDietActivated() // Atualiza dashboard
@@ -136,7 +137,7 @@ fun CatalogScreen(
         coroutineScope.launch {
             try {
                 // Obter detalhes completos da dieta com refeições e alimentos inclusos
-                val detail = DietPalApiService.getDietDetails(diet.id!!)
+                val detail = repository.getDietDetails(diet.id!!)
                 
                 // Limpar campos de sistema para o arquivo de exportação
                 val cleanedMeals = detail.meals.map { meal ->
@@ -372,7 +373,7 @@ fun CatalogScreen(
                                     onClick = {
                                         coroutineScope.launch {
                                             try {
-                                                DietPalApiService.activateDiet(diet.id!!)
+                                                repository.activateDiet(diet.id!!)
                                                 showToastMessage("Dieta \"${diet.name}\" ativada!")
                                                 loadDiets()
                                                 onDietActivated() // Atualiza dashboard
@@ -430,7 +431,7 @@ fun CatalogScreen(
             onCreateDiet = { newDiet ->
                 coroutineScope.launch {
                     try {
-                        DietPalApiService.createDiet(newDiet)
+                        repository.createDiet(newDiet)
                         showToastMessage("Dieta criada com sucesso!")
                         isCreateDialogOpen = false
                         loadDiets()
@@ -456,7 +457,7 @@ fun CatalogScreen(
             onConfirm = {
                 coroutineScope.launch {
                     try {
-                        DietPalApiService.deleteDiet(diet.id!!)
+                        repository.deleteDiet(diet.id!!)
                         showToastMessage("Dieta excluída com sucesso.")
                         loadDiets()
                         if (diet.isActive) {

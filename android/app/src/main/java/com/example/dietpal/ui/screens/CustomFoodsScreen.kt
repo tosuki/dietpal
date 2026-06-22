@@ -18,8 +18,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
-import com.example.dietpal.data.api.DietPalApiService
+import com.example.dietpal.data.repository.DietPalRepositoryProvider
 import com.example.dietpal.data.model.Food
 import com.example.dietpal.ui.components.CustomDialog
 import com.example.dietpal.ui.theme.*
@@ -31,6 +32,8 @@ fun CustomFoodsScreen(
     showToastMessage: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val repository = remember(context) { DietPalRepositoryProvider.getRepository(context) }
     val coroutineScope = rememberCoroutineScope()
 
     // Estados
@@ -54,7 +57,7 @@ fun CustomFoodsScreen(
             isError = false
             try {
                 // Carrega todos os alimentos e filtra apenas os customizados
-                val allFoods = DietPalApiService.getFoods()
+                val allFoods = repository.getFoods()
                 foods = allFoods.filter { it.isCustom }
             } catch (e: Exception) {
                 isError = true
@@ -297,7 +300,7 @@ fun CustomFoodsScreen(
                                 }
                                 coroutineScope.launch {
                                     try {
-                                        DietPalApiService.createCustomFood(
+                                        repository.createCustomFood(
                                             name = foodName,
                                             calories = foodCalories.toDoubleOrNull() ?: 100.0,
                                             protein = foodProtein.toDoubleOrNull() ?: 10.0,
@@ -341,7 +344,7 @@ fun CustomFoodsScreen(
             onConfirm = {
                 coroutineScope.launch {
                     try {
-                        DietPalApiService.deleteCustomFood(food.id)
+                        repository.deleteCustomFood(food.id)
                         showToastMessage("Alimento removido do catálogo.")
                         loadCustomFoods()
                     } catch (e: Exception) {

@@ -18,8 +18,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
-import com.example.dietpal.data.api.DietPalApiService
+import com.example.dietpal.data.repository.DietPalRepositoryProvider
 import com.example.dietpal.data.model.Diet
 import com.example.dietpal.data.model.Meal
 import com.example.dietpal.data.model.MealFood
@@ -33,6 +34,8 @@ fun DashboardScreen(
     showToastMessage: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val repository = remember(context) { DietPalRepositoryProvider.getRepository(context) }
     val coroutineScope = rememberCoroutineScope()
 
     // Estados locais da dieta ativa
@@ -60,7 +63,7 @@ fun DashboardScreen(
             isLoading = true
             isError = false
             try {
-                val diet = DietPalApiService.getActiveDiet()
+                val diet = repository.getActiveDiet()
                 activeDiet = diet
                 diet?.let {
                     targetFormName = it.name
@@ -88,12 +91,12 @@ fun DashboardScreen(
         coroutineScope.launch {
             isSaving = true
             try {
-                val saved = DietPalApiService.updateDiet(updatedDiet.id!!, updatedDiet)
+                val saved = repository.updateDiet(updatedDiet.id!!, updatedDiet)
                 activeDiet = saved
             } catch (e: Exception) {
                 showToastMessage(e.message ?: "Falha ao salvar dieta no servidor.")
                 // Recarrega do servidor em caso de falha
-                val current = DietPalApiService.getActiveDiet()
+                val current = repository.getActiveDiet()
                 activeDiet = current
             } finally {
                 isSaving = false
