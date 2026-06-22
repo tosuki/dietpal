@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { DietController } from '../controllers/diet.controller.js';
+import { getDietHttpControllerInstance } from '../../factory';
 
 /**
  * Registra as rotas relacionadas a dietas no servidor Fastify.
@@ -10,7 +10,7 @@ import { DietController } from '../controllers/diet.controller.js';
  * await fastify.register(dietRouter, { prefix: '/api/diets' });
  */
 export async function dietRouter(fastify: FastifyInstance) {
-  const dietController = new DietController();
+  const dietController = getDietHttpControllerInstance()
 
   fastify.get('/', dietController.listAll);
   fastify.get('/active', dietController.findActive);

@@ -1,6 +1,6 @@
-import { IDietRepository } from '../diet.repository.interface.js';
-import { Diet, CreateDietInput } from '../types.js';
-import { prisma } from '../../lib/prisma.js';
+import { IDietRepository } from '../diet.repository.interface';
+import { Diet, CreateDietInput } from '../types';
+import { prisma } from '../../lib/prisma';
 
 /**
  * Implementação do repositório de Dietas utilizando o Prisma ORM e PostgreSQL.

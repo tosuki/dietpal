@@ -1,5 +1,5 @@
-import { IDietRepository } from '../../repositories/diet.repository.interface.js';
-import { Diet, CreateDietInput } from '../../repositories/types.js';
+import { IDietRepository } from '../../repositories/diet.repository.interface';
+import { Diet, CreateDietInput } from '../../repositories/types';
 
 /**
  * Caso de uso para atualizar os dados de uma dieta e recalcular sua árvore de refeições associada.

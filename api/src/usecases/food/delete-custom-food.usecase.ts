@@ -1,4 +1,4 @@
-import { IFoodRepository } from '../../repositories/food.repository.interface.js';
+import { IFoodRepository } from '../../repositories/food.repository.interface';
 
 /**
  * Caso de uso para exclusão de um alimento customizado permanente.

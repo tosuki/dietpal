@@ -3,6 +3,7 @@ import { z } from 'zod';
 const envSchema = z.object({
   DATABASE_URL: z.string().url("DATABASE_URL deve ser uma URL válida"),
   PORT: z.coerce.number().default(3001),
+  MONGODB_URI: z.string(),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 

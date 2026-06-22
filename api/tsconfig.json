@@ -13,7 +13,8 @@
     "allowJs": true,
     "jsx": "preserve",
     "esModuleInterop": true,
-    "module": "ESNext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "forceConsistentCasingInFileNames": true,
     "typeRoots": [
       "src/types",

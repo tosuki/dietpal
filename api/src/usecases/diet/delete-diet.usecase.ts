@@ -1,4 +1,4 @@
-import { IDietRepository } from '../../repositories/diet.repository.interface.js';
+import { IDietRepository } from '../../repositories/diet.repository.interface';
 
 /**
  * Caso de uso para a exclusão definitiva de uma dieta do catálogo.

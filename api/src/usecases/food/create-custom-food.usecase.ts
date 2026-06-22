@@ -1,5 +1,5 @@
-import { IFoodRepository } from '../../repositories/food.repository.interface.js';
-import { Food } from '../../repositories/types.js';
+import { IFoodRepository } from '../../repositories/food.repository.interface';
+import { Food } from '../../repositories/types';
 
 interface CreateCustomFoodInput {
   name: string;

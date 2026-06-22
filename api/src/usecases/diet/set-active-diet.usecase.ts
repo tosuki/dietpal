@@ -1,5 +1,5 @@
-import { IDietRepository } from '../../repositories/diet.repository.interface.js';
-import { Diet } from '../../repositories/types.js';
+import { IDietRepository } from '../../repositories/diet.repository.interface';
+import { Diet } from '../../repositories/types';
 
 /**
  * Caso de uso para ativar uma dieta e desativar todas as demais no sistema.

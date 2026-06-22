@@ -1,6 +1,6 @@
-import { IFoodRepository } from '../food.repository.interface.js';
-import { Food } from '../types.js';
-import { prisma } from '../../lib/prisma.js';
+import { IFoodRepository } from '../food.repository.interface';
+import { Food } from '../types';
+import { prisma } from '../../lib/prisma';
 
 /**
  * Implementação do repositório de Alimentos utilizando o Prisma ORM e PostgreSQL.

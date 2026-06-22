@@ -1,4 +1,4 @@
-import { Food } from './types.js';
+import { Food } from './types';
 
 /**
  * Interface que define as operações de acesso a dados para a entidade Food.

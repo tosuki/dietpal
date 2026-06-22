@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import { foodRepository } from '../../repositories/index.js';
-import { SearchFoodsUseCase } from '../../usecases/food/search-foods.usecase.js';
-import { CreateCustomFoodUseCase } from '../../usecases/food/create-custom-food.usecase.js';
-import { DeleteCustomFoodUseCase } from '../../usecases/food/delete-custom-food.usecase.js';
+
+import { SearchFoodsUseCase } from '../../usecases/food/search-foods.usecase';
+import { CreateCustomFoodUseCase } from '../../usecases/food/create-custom-food.usecase';
+import { DeleteCustomFoodUseCase } from '../../usecases/food/delete-custom-food.usecase';
 
 /**
  * Controlador HTTP responsável por receber requisições relacionadas a alimentos e direcioná-las aos Use Cases correspondentes.
@@ -13,9 +13,11 @@ import { DeleteCustomFoodUseCase } from '../../usecases/food/delete-custom-food.
  * fastify.get('/foods', foodController.search);
  */
 export class FoodController {
-  private searchFoodsUseCase = new SearchFoodsUseCase(foodRepository);
-  private createCustomFoodUseCase = new CreateCustomFoodUseCase(foodRepository);
-  private deleteCustomFoodUseCase = new DeleteCustomFoodUseCase(foodRepository);
+  constructor(
+    private searchFoodsUseCase: SearchFoodsUseCase,
+    private createCustomFoodUseCase: CreateCustomFoodUseCase,
+    private deleteCustomFoodUseCase: DeleteCustomFoodUseCase
+  ) {}
 
   /**
    * Trata a busca textual de alimentos com suporte a queries opcionais.

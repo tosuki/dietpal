@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { FoodController } from '../controllers/food.controller.js';
+import { getFoodHttpControllerInstance } from '../../factory';
 
 /**
  * Registra as rotas relacionadas a alimentos no servidor Fastify.
@@ -10,7 +10,7 @@ import { FoodController } from '../controllers/food.controller.js';
  * await fastify.register(foodRouter, { prefix: '/api/foods' });
  */
 export async function foodRouter(fastify: FastifyInstance) {
-  const foodController = new FoodController();
+  const foodController = getFoodHttpControllerInstance()
 
   fastify.get('/', foodController.search);
   fastify.post('/custom', foodController.createCustom);

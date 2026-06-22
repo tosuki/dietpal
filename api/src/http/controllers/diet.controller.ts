@@ -1,6 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import { dietRepository } from '../../repositories/index.js';
+
+import {
+  dietInputSchema,
+} from "../schema/diet.schema.js"
+
 import { ListDietsUseCase } from '../../usecases/diet/list-diets.usecase.js';
 import { GetActiveDietUseCase } from '../../usecases/diet/get-active-diet.usecase.js';
 import { GetDietByIdUseCase } from '../../usecases/diet/get-diet-by-id.usecase.js';
@@ -8,34 +12,6 @@ import { CreateDietUseCase } from '../../usecases/diet/create-diet.usecase.js';
 import { UpdateDietUseCase } from '../../usecases/diet/update-diet.usecase.js';
 import { DeleteDietUseCase } from '../../usecases/diet/delete-diet.usecase.js';
 import { SetActiveDietUseCase } from '../../usecases/diet/set-active-diet.usecase.js';
-
-// Schemas Zod para validação da requisição
-const mealFoodInputSchema = z.object({
-  foodId: z.string().uuid().nullable().optional(),
-  name: z.string().min(1, 'Nome do alimento é obrigatório'),
-  calories: z.number().nonnegative(),
-  protein: z.number().nonnegative(),
-  carbs: z.number().nonnegative(),
-  fat: z.number().nonnegative(),
-  amount: z.number().positive('Quantidade deve ser maior que zero'),
-});
-
-const mealInputSchema = z.object({
-  name: z.string().min(1, 'Nome da refeição é obrigatório'),
-  order: z.number().int(),
-  foods: z.array(mealFoodInputSchema),
-});
-
-const dietInputSchema = z.object({
-  name: z.string().min(1, 'Nome da dieta é obrigatório'),
-  description: z.string().optional().nullable(),
-  targetCalories: z.number().nonnegative().default(2000),
-  targetProtein: z.number().nonnegative().default(150),
-  targetCarbs: z.number().nonnegative().default(200),
-  targetFat: z.number().nonnegative().default(70),
-  isActive: z.boolean().default(false),
-  meals: z.array(mealInputSchema).default([]),
-});
 
 /**
  * Controlador HTTP responsável por receber requisições relacionadas a dietas e direcioná-las aos Use Cases correspondentes.
@@ -45,13 +21,15 @@ const dietInputSchema = z.object({
  * fastify.get('/diets', dietController.listAll);
  */
 export class DietController {
-  private listDietsUseCase = new ListDietsUseCase(dietRepository);
-  private getActiveDietUseCase = new GetActiveDietUseCase(dietRepository);
-  private getDietByIdUseCase = new GetDietByIdUseCase(dietRepository);
-  private createDietUseCase = new CreateDietUseCase(dietRepository);
-  private updateDietUseCase = new UpdateDietUseCase(dietRepository);
-  private deleteDietUseCase = new DeleteDietUseCase(dietRepository);
-  private setActiveDietUseCase = new SetActiveDietUseCase(dietRepository);
+  constructor(
+    private listDietsUseCase: ListDietsUseCase,
+    private getActiveDietUseCase: GetActiveDietUseCase,
+    private getDietByIdUseCase: GetDietByIdUseCase,
+    private createDietUseCase: CreateDietUseCase,
+    private updateDietUseCase: UpdateDietUseCase,
+    private deleteDietUseCase: DeleteDietUseCase,
+    private setActiveDietUseCase: SetActiveDietUseCase
+  ) {}
 
   /**
    * Lista todas as dietas (versão rasa).

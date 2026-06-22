@@ -1,4 +1,4 @@
-import { Diet, CreateDietInput } from './types.js';
+import { Diet, CreateDietInput } from './types';
 
 /**
  * Interface que define as operações de acesso a dados para a entidade Diet e suas tabelas relacionadas (Meal, MealFood).
