@@ -2,6 +2,8 @@ import "dotenv/config";
 import fastify from "./http/server"
 
 import { env } from './config/env';
+import { logger } from "./logger/logger";
+
 import { getMongoDatabaseConnector } from "./factory";
 
 const start = async () => {
@@ -11,9 +13,11 @@ const start = async () => {
     
     await getMongoDatabaseConnector().connect()
     await fastify.listen({ port, host });
-    console.log(`Servidor rodando em http://localhost:${port}`);
+
+    logger.info(`Servidor rodando em http://localhost:${port}`);
+    logger.debug(fastify.printRoutes())
   } catch (err) {
-    fastify.log.error(err);
+    logger.error(err)
     process.exit(1);
   }
 };

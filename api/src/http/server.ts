@@ -9,7 +9,7 @@ import { env } from "../config/env"
 import { getMongoDatabaseConnector } from "../factory"
 
 const fastify = Fastify({
-    logger: env.NODE_ENV === 'development',
+  logger: env.NODE_ENV === "development"
 })
 
 const mongoConnectionManager = getMongoDatabaseConnector()
