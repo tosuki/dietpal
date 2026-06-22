@@ -29,7 +29,7 @@ export class DietController {
     private updateDietUseCase: UpdateDietUseCase,
     private deleteDietUseCase: DeleteDietUseCase,
     private setActiveDietUseCase: SetActiveDietUseCase
-  ) {}
+  ) { }
 
   /**
    * Lista todas as dietas (versão rasa).
