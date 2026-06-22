@@ -12,10 +12,15 @@ private val MonochromaticColorScheme = lightColorScheme(
     onPrimaryContainer = TextMain,
     secondary = TextMuted,
     onSecondary = Color.White,
+    secondaryContainer = PrimaryGlow,
+    onSecondaryContainer = TextMain,
     background = BgColor,
     onBackground = TextMain,
     surface = CardBg,
     onSurface = TextMain,
+    surfaceVariant = CardBg,
+    onSurfaceVariant = TextMuted,
+    surfaceContainer = Color.White,
     outline = CardBorder
 )
 
