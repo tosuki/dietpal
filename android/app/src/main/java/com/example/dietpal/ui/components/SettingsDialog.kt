@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.dietpal.data.repository.DietPalRepositoryProvider
 import com.example.dietpal.ui.theme.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsDialog(
@@ -25,6 +26,7 @@ fun SettingsDialog(
     onSettingsSaved: () -> Unit
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val prefs = remember { context.getSharedPreferences("dietpal_settings", Context.MODE_PRIVATE) }
 
     // Carregar configurações salvas
@@ -32,6 +34,10 @@ fun SettingsDialog(
     var apiUrl by remember { mutableStateOf(prefs.getString("api_url", "http://10.0.2.2:3001/api") ?: "http://10.0.2.2:3001/api") }
     var mongoUri by remember { mutableStateOf(prefs.getString("mongo_uri", "mongodb://10.0.2.2:27017") ?: "mongodb://10.0.2.2:27017") }
     var mongoDb by remember { mutableStateOf(prefs.getString("mongo_db", "diet_broker") ?: "diet_broker") }
+
+    // Estados de teste de conexão
+    var isTestingConnection by remember { mutableStateOf(false) }
+    var connectionTestResult by remember { mutableStateOf<Result<Unit>?>(null) }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
@@ -133,6 +139,67 @@ fun SettingsDialog(
                         ),
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                     )
+                }
+
+                // Botão de testar conexão e feedback
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                isTestingConnection = true
+                                connectionTestResult = null
+                                val result = if (dataMode == "API") {
+                                    DietPalRepositoryProvider.testApiConnection(apiUrl)
+                                } else {
+                                    DietPalRepositoryProvider.testMongoConnection(mongoUri, mongoDb)
+                                }
+                                connectionTestResult = result
+                                isTestingConnection = false
+                            }
+                        },
+                        enabled = !isTestingConnection,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = TextMain
+                        ),
+                        border = BorderStroke(1.dp, CardBorder),
+                        shape = RoundedCornerShape(6.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (isTestingConnection) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                color = TextMain,
+                                strokeWidth = 2.dp
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Testando...", fontSize = 14.sp)
+                        } else {
+                            Text("Testar Conexão", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                        }
+                    }
+
+                    connectionTestResult?.let { result ->
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (result.isSuccess) {
+                            Text(
+                                text = "Conexão estabelecida com sucesso!",
+                                color = GreenAccent,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        } else {
+                            val errorMsg = result.exceptionOrNull()?.message ?: "Erro desconhecido"
+                            Text(
+                                text = "Falha na conexão: $errorMsg",
+                                color = RedAccent,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
