@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -86,11 +87,12 @@ fun DietPalApp() {
                     tonalElevation = 0.dp,
                     windowInsets = WindowInsets(0, 0, 0, 0),
                     modifier = Modifier
+                        .height(64.dp)
                         .graphicsLayer {
-                            shape = RoundedCornerShape(24.dp)
+                            shape = RoundedCornerShape(32.dp)
                             clip = true
                         }
-                        .border(1.dp, CardBorder, RoundedCornerShape(24.dp))
+                        .border(1.dp, CardBorder, RoundedCornerShape(32.dp))
                 ) {
                     AppDestinations.entries.forEach { destination ->
                         NavigationBarItem(
@@ -102,12 +104,9 @@ fun DietPalApp() {
                                     contentDescription = destination.label
                                 )
                             },
-                            label = { Text(destination.label) },
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = TextMain,
                                 unselectedIconColor = TextMuted,
-                                selectedTextColor = TextMain,
-                                unselectedTextColor = TextMuted,
                                 indicatorColor = PrimaryGlow
                             )
                         )
