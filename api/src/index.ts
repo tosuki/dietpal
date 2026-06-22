@@ -13,8 +13,6 @@ const start = async () => {
     
     await getMongoDatabaseConnector().connect()
     await fastify.listen({ port, host });
-
-    logger.info(`Servidor rodando em http://localhost:${port}`);
     logger.debug(fastify.printRoutes())
   } catch (err) {
     logger.error(err)

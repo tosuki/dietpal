@@ -34,6 +34,17 @@ export type ColorizedLoggerOpts = {
     }
 }
 
+type LogLevel = "debug" | "info" | "warn" | "error" | "critical"
+
+type PinoLogPayload = {
+    level?: number
+    msg?: string
+    time?: number
+    pid?: number
+    hostname?: string
+    [key: string]: unknown
+}
+
 export class ColorizedLogger {
     constructor(
         private opts: ColorizedLoggerOpts
@@ -46,10 +57,12 @@ export class ColorizedLogger {
             start += ` - ${new Date().toDateString()}`
         }
 
-        return `${start}] `
+        return `${color}${start}]${AnsiColors.RESET} `
     }
 
     debug(...args: any[]) {
+        if (!this.opts.debug) return
+
         console.debug(this.prefix("debug", this.opts.colors.debug), ...args)
     }
 
@@ -83,3 +96,94 @@ export const logger = new ColorizedLogger({
         timestamp: true
     }
 })
+
+const pinoLevelToLogLevel = (level?: number): LogLevel => {
+    if (!level) return "info"
+    if (level >= 60) return "critical"
+    if (level >= 50) return "error"
+    if (level >= 40) return "warn"
+    if (level >= 30) return "info"
+    return "debug"
+}
+
+const dispatchLog = (level: LogLevel, message: string, meta?: Record<string, unknown>) => {
+    if (level === "critical") {
+        if (meta && Object.keys(meta).length > 0) {
+            logger.critical(message, meta)
+            return
+        }
+
+        logger.critical(message)
+        return
+    }
+
+    if (level === "error") {
+        if (meta && Object.keys(meta).length > 0) {
+            logger.error(message, meta)
+            return
+        }
+
+        logger.error(message)
+        return
+    }
+
+    if (level === "warn") {
+        if (meta && Object.keys(meta).length > 0) {
+            logger.warn(message, meta)
+            return
+        }
+
+        logger.warn(message)
+        return
+    }
+
+    if (level === "debug") {
+        if (meta && Object.keys(meta).length > 0) {
+            logger.debug(message, meta)
+            return
+        }
+
+        logger.debug(message)
+        return
+    }
+
+    if (meta && Object.keys(meta).length > 0) {
+        logger.info(message, meta)
+        return
+    }
+
+    logger.info(message)
+}
+
+const sanitizePinoPayload = (payload: PinoLogPayload): Record<string, unknown> => {
+    const { level, msg, time, pid, hostname, ...meta } = payload
+    return meta
+}
+
+export const fastifyLoggerConfig = env.NODE_ENV === "development"
+    ? {
+        level: "debug",
+        stream: {
+            write(chunk: string | Uint8Array) {
+                const text = chunk.toString().trim()
+
+                if (!text) return
+
+                for (const line of text.split("\n")) {
+                    if (!line.trim()) continue
+
+                    try {
+                        const payload = JSON.parse(line) as PinoLogPayload
+                        const level = pinoLevelToLogLevel(payload.level)
+                        const message = payload.msg ?? "fastify log"
+                        const meta = sanitizePinoPayload(payload)
+
+                        dispatchLog(level, message, meta)
+                    } catch {
+                        logger.info(line)
+                    }
+                }
+            }
+        }
+    }
+    : false

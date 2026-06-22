@@ -4,12 +4,12 @@ import cors from "@fastify/cors"
 
 import { dietRouter } from "./routes/diet.router"
 import { foodRouter } from "./routes/food.router"
-import { env } from "../config/env"
+import { fastifyLoggerConfig } from "../logger/logger"
 
 import { getMongoDatabaseConnector } from "../factory"
 
 const fastify = Fastify({
-  logger: env.NODE_ENV === "development"
+  logger: fastifyLoggerConfig
 })
 
 const mongoConnectionManager = getMongoDatabaseConnector()
