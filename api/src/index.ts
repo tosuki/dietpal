@@ -8,9 +8,9 @@ import { getMongoDatabaseConnector } from "./factory";
 
 const start = async () => {
   try {
-    const port = env.PORT;
-    const host = '0.0.0.0';
-    
+    const port = env.SERVER_PORT;
+    const host = env.SERVER_HOST;
+
     await getMongoDatabaseConnector().connect()
     await fastify.listen({ port, host });
     logger.debug(fastify.printRoutes())
